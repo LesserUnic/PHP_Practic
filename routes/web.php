@@ -15,6 +15,8 @@ use App\Http\Controllers\TodosController;
 |
 */
 
+
+
 Route::get('/', [NoteController::class, 'index']);                                                          //Base return
 //Мб проапдейтить последние руты чтобы вызывался один контроллер, ? после имени переменной и значение по умолчанию
 Route::get('/api/notes', [NoteController::class, 'show'])->name("notes");                             //list of notes
@@ -24,7 +26,7 @@ Route::post('/api/notes', [NoteController::class, 'create']);                   
 Route::patch('/api/notes/{id}', [NoteController::class, 'update']);                                    //update note
 Route::patch('/api/notes/{note_id}/todos/{todo_id}', [TodosController::class, 'update']);              //update todos
 Route::delete('/api/notes/{id}', [NoteController::class, 'destroy']);                                   //delete note
-Route::delete('/api/notes/{note_id}/todos', [TodosController::class, 'destroy']);                       //delete all todos
+//Route::delete('/api/notes/{note_id}/todos', [TodosController::class, 'destroy']);                       //delete all todos
 Route::delete('/api/notes/{note_id}/todos/{todo_id}', [TodosController::class, 'destroy']);             //delete todos
 
 

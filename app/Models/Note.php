@@ -9,7 +9,7 @@ class Note extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['Name', 'Note', 'Status'];
+    protected $fillable = ['name', 'note', 'status'];
 
     protected $hidden = ["created_at", "updated_at"];
 }

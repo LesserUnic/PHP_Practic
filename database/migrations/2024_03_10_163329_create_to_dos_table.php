@@ -13,10 +13,9 @@ return new class extends Migration
     {
         Schema::create('to_dos', function (Blueprint $table) {
             $table->id();
-            $table->integer('note_id');
-            $table->foreignIdFor(\App\Models\Note::class, 'note_id')
-            ->constrained((new \App\Models\Note)->getTable())
-            ->onDeleteCascade();
+            $table->foreignId('note_id')
+            ->constrained()
+            ->onDelete('cascade');
             $table->text('description');
             $table->boolean('is_complete');
             $table->timestamps();

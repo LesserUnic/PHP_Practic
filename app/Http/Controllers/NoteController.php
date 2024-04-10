@@ -15,16 +15,21 @@ class NoteController extends Controller
     }
 
     public function show(){
-        //$notes=Note::all()->first();
         return new NoteResource(Note::all());
     }
 
     public function create(Request $request){
-        $notes=Note::updateOrCreate([
-            "Name" => $request->input('name'),
-            "Note" => $request->input('note'),
-            "Status" => $request->input('status'),
-            ]);
+        $validated = $request->validate([
+            'name' => 'required|string', 
+            'note' => 'required|string', 
+            'status' => 'integer'
+        ]);
+
+        $notes = Note::Create([
+            'name' => $validated['name'], 
+            'note' => $validated['note'], 
+            'status' => $validated['status']
+        ]);
         return redirect()->route("notes");
     }
 
@@ -41,15 +46,20 @@ class NoteController extends Controller
 
     public function update(Request $request, int $id){
         $note=Note::query()->find($id);
+        $request->validate([
+            'name' => 'nullable|string',
+            'note' => 'nullable|string', 
+            'status' => 'nullable|integer'
+        ]);
         if($note!=null){
-            if($request->input('name')!=null){
-                $note->Name=$request->input('name');
+            if($request['name']!=null){
+                $note->name=$request['name'];
             }
-            if($request->input('note')!=null){
-                $note->Note=$request->input('note');
+            if($request['note']!=null){
+                $note->note=$request['note'];
             }
-            if($request->input('status')!=null){
-                $note->Status=$request->input('status');
+            if($request['status']!=null){
+                $note->status=$request['status'];
             }
             $note->save();
         }

@@ -18,8 +18,11 @@ class TodosController extends Controller
     }
 
     public function create(Request $request, Int $id){
+        $request->validate([
+            'description' => 'required|String',
+        ]);
         $todos = ToDos::Create(
-            ['note_id' => $id, 'description' => $request->input('description'), 'is_complete'=>0]
+            ['note_id' => $id, 'description' => $request['description'], 'is_complete'=>0]
         );
         return redirect()->route('todos', $id);
     }
@@ -28,17 +31,23 @@ class TodosController extends Controller
         if($note_id==null){
             return "Error, incorrect note_id";
         }
-        if($request->input('todo_id')==-1){
+
+        $request->validate(['todo_id' => 'integer']);
+
+        if($request['todo_id'] == 0){
             $todos=ToDos::query()
                 ->where('note_id', $note_id);
-            foreach($todos as $todo)
+
+            foreach($todos->get() as $todo){
                 $todo->delete();    
+            }
+
             return redirect()->route("notes");
         }
         else{
             $todo=ToDos::query()
                 ->where('note_id', $note_id)
-                ->find($request->input('todo_id'));
+                ->find($request['todo_id']);
             if($todo!=null){
                 $todo->delete();
                 return redirect()->route("todos", $note_id);
@@ -51,12 +60,16 @@ class TodosController extends Controller
 
     public function update(Request $request, Int $note_id, Int $todo_id){
         $todo=ToDos::query()->where('note_id', $note_id)->find($todo_id);
-        if($todo!=null){
-            if($request->input('description')!=null){
-                $todo->description=$request->input('description');
+        $request->validate([
+            'description' => 'nullable|string',
+            'is_complete' => 'nullable|bollean'
+        ]);
+        if($todo != null){
+            if($request['description'] != null){
+                $todo->description = $request['description'];
             }
-            if($request->input('is_complete')!=null){
-                $todo->is_complete=$request->input('is_complete');
+            if($request['is_complete'] != null){
+                $todo->is_complete = $request['is_complete'];
             }
             $todo->save();
         }
